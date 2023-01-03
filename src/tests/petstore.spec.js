@@ -14,13 +14,32 @@ class HomePage {
   }
 
   async enterStore() {
-    await this.page.click("a[href='actions/Catalog.action']")
+    await this.page.getByRole("link", { name: "Enter the Store" }).click()
+  }
+}
+
+class CatalogPage {
+  constructor(page) {
+    this.page = page
+  }
+
+  async signin() {
+    await this.page.getByRole("link", { name: "Sign In" }).click()
+  }
+}
+
+function createpetstore(page) {
+  return {
+    homePage: new HomePage(page),
+    catalogPage: new CatalogPage(page),
   }
 }
 
 test("Buy a dog", async ({ page }) => {
-  const homePage = new HomePage(page)
-  await homePage.goto()
-  await homePage.verifyTitle()
-  await homePage.enterStore()
+  const petstore = createpetstore(page)
+
+  await petstore.homePage.goto()
+  await petstore.homePage.verifyTitle()
+  await petstore.homePage.enterStore()
+  await petstore.catalogPage.signin()
 })
