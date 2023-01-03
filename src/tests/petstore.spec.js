@@ -44,6 +44,7 @@ class RegisterPage {
   }
 
   async register() {
+    await this.page.locator('input[name="username"]').fill("username")
     await this.page.locator('input[name="password"]').fill("password")
     await this.page.locator('input[name="repeatedPassword"]').fill("password")
     await this.page.locator('input[name="account\\.firstName"]').fill("aidy")
