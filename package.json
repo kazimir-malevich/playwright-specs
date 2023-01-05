@@ -8,6 +8,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@faker-js/faker": "^7.6.0",
     "@playwright/test": "^1.29.1",
     "eslint": "^8.30.0",
     "eslint-config-prettier": "^8.5.0",
