@@ -4,13 +4,14 @@
     "es2021": true
   },
   "extends": ["plugin:prettier/recommended"],
-  "plugins": ["prettier"],
+  "plugins": ["prettier", "functional"],
   "overrides": [],
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
   "rules": {
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "functional/no-this-expression": "error"
   }
 }

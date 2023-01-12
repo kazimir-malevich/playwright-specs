@@ -1,26 +1,12 @@
-const HomePage = require("./HomePage")
-const CatalogPage = require("./CatalogPage")
-const SignInPage = require("./SignInPage")
-const RegisterPage = require("./RegisterPage")
-
-const { test } = require("@playwright/test")
-
-function createPages(page) {
-  return {
-    homePage: new HomePage(page),
-    catalogPage: new CatalogPage(page),
-    signInPage: new SignInPage(page),
-    registerPage: new RegisterPage(page),
-  }
-}
+const { test, expect } = require("@playwright/test")
 
 test("Buy a dog", async ({ page }) => {
-  const petstore = createPages(page)
-
-  await petstore.homePage.goto()
-  await petstore.homePage.verifyTitle()
-  await petstore.homePage.clickEnterStore()
-  await petstore.catalogPage.clickSignIn()
-  await petstore.signInPage.clickRegisterNow()
-  await petstore.registerPage.register()
+  await navigateToStore(page, "/", "JPetStore Demo", "Enter the Store")
 })
+
+async function navigateToStore(page, url, expectedTitle, linkText) {
+  // baseURL is set in the config
+  await page.goto(url)
+  await expect(page).toHaveTitle(expectedTitle)
+  await page.getByRole("link", { name: linkText }).click()
+}
