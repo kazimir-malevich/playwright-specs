@@ -10,8 +10,17 @@ test("Buy a dog", async ({ page }) => {
   await clickDogLink(page)
   await addMaleBulldog(page)
   await addMaleBulldogtoCart(page)
-  await clickLink(page, "Proceed to Checkout")
+  await checkout(page)
+  await clickLink(page, "Return to Main Menu")
 })
+
+async function checkout(page) {
+  await clickLink(page, "Proceed to Checkout")
+  await page.getByRole("button", { name: "Continue" }).click()
+  await clickLink(page, "Confirm")
+  const locator = page.locator("#Content > ul > li")
+  await expect(locator).toHaveText("Thank you, your order has been submitted.")
+}
 
 async function addMaleBulldog(page) {
   await page.getByRole("link", { name: "K9-BD-01" }).click()
