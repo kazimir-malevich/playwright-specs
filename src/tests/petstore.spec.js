@@ -47,4 +47,5 @@ async function register(page) {
   await page
     .locator('input[name="account\\.country"]')
     .fill(faker.random.locale())
+  await page.getByRole("button", { name: "Save Account Information" }).click()
 }
