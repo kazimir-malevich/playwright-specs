@@ -5,8 +5,16 @@ test("Buy a dog", async ({ page }) => {
   await navigateToStore(page)
   await clickLink(page, "Sign In")
   await clickLink(page, "Register Now")
-  await register(page)
+  const { username, password } = await register(page)
+  await login(page, username, password)
 })
+
+async function login(page, username, password) {
+  await clickLink(page, "Sign In")
+  await page.locator('input[name="username"]').fill(username)
+  await page.locator('input[name="password"]').fill(password)
+  await page.getByRole("button", { name: "Login" }).click()
+}
 
 async function clickLink(page, name) {
   await page.getByRole("link", { name: name }).click()
@@ -20,8 +28,9 @@ async function navigateToStore(page) {
 }
 
 async function register(page) {
+  const username = faker.internet.userName()
   const password = faker.internet.password()
-  await page.locator('input[name="username"]').fill(faker.internet.userName())
+  await page.locator('input[name="username"]').fill(username)
   await page.locator('input[name="password"]').fill(password)
   await page.locator('input[name="repeatedPassword"]').fill(password)
   await page
@@ -48,4 +57,5 @@ async function register(page) {
     .locator('input[name="account\\.country"]')
     .fill(faker.random.locale())
   await page.getByRole("button", { name: "Save Account Information" }).click()
+  return { username, password }
 }
