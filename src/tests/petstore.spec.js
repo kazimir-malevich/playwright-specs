@@ -7,7 +7,28 @@ test("Buy a dog", async ({ page }) => {
   await clickLink(page, "Register Now")
   const { username, password } = await register(page)
   await login(page, username, password)
+  await clickDogLink(page)
+  await addMaleBulldog(page)
+  await addMaleBulldogtoCart(page)
+  await clickLink(page, "Proceed to Checkout")
 })
+
+async function addMaleBulldog(page) {
+  await page.getByRole("link", { name: "K9-BD-01" }).click()
+}
+
+async function addMaleBulldogtoCart(page) {
+  await page
+    .getByRole("row", {
+      name: "EST-6 K9-BD-01 Male Adult Bulldog $18.50 Add to Cart",
+    })
+    .getByRole("link", { name: "Add to Cart" })
+    .click()
+}
+
+async function clickDogLink(page) {
+  await page.locator("#QuickLinks").getByRole("link").nth(1).click()
+}
 
 async function login(page, username, password) {
   await clickLink(page, "Sign In")
