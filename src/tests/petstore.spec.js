@@ -9,7 +9,7 @@ test("Buy a dog", async ({ page }) => {
   await login(page, username, password)
   await clickDogLink(page)
   await addMaleBulldog(page)
-  await addMaleBulldogtoCart(page)
+  await addMaleBulldogToCart(page)
   await checkout(page)
   await clickLink(page, "Return to Main Menu")
 })
@@ -26,7 +26,7 @@ async function addMaleBulldog(page) {
   await page.getByRole("link", { name: "K9-BD-01" }).click()
 }
 
-async function addMaleBulldogtoCart(page) {
+async function addMaleBulldogToCart(page) {
   await page
     .getByRole("row", {
       name: "EST-6 K9-BD-01 Male Adult Bulldog $18.50 Add to Cart",
