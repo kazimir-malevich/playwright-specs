@@ -3,59 +3,18 @@ const { test, expect } = require("@playwright/test")
 
 test("Buy a dog", async ({ page }) => {
   await navigateToStore(page)
-  await clickLink(page, "Sign In")
-  await clickLink(page, "Register Now")
+  await getLinkByText(page, "Sign In").click()
+  await getLinkByText(page, "Register Now").click()
   const { username, password } = await register(page)
   await login(page, username, password)
   await clickDogLink(page)
   await addMaleBulldog(page)
   await addMaleBulldogToCart(page)
   await checkout(page)
-  await clickLink(page, "Return to Main Menu")
+  await getLinkByText(page, "Return to Main Menu").click()
 })
 
-async function checkout(page) {
-  await clickLink(page, "Proceed to Checkout")
-  await page.getByRole("button", { name: "Continue" }).click()
-  await clickLink(page, "Confirm")
-  const locator = page.locator("#Content > ul > li")
-  await expect(locator).toHaveText("Thank you, your order has been submitted.")
-}
-
-async function addMaleBulldog(page) {
-  await page.getByRole("link", { name: "K9-BD-01" }).click()
-}
-
-async function addMaleBulldogToCart(page) {
-  await page
-    .getByRole("row", {
-      name: "EST-6 K9-BD-01 Male Adult Bulldog $18.50 Add to Cart",
-    })
-    .getByRole("link", { name: "Add to Cart" })
-    .click()
-}
-
-async function clickDogLink(page) {
-  await page.locator("#QuickLinks").getByRole("link").nth(1).click()
-}
-
-async function login(page, username, password) {
-  await clickLink(page, "Sign In")
-  await page.locator('input[name="username"]').fill(username)
-  await page.locator('input[name="password"]').fill(password)
-  await page.getByRole("button", { name: "Login" }).click()
-}
-
-async function clickLink(page, name) {
-  await page.getByRole("link", { name: name }).click()
-}
-
-async function navigateToStore(page) {
-  // baseURL is set in the config
-  await page.goto("/")
-  await expect(page).toHaveTitle("JPetStore Demo")
-  await clickLink(page, "Enter the Store")
-}
+const getLinkByText = (page, name) => page.getByRole("link", { name: name })
 
 async function register(page) {
   const username = faker.internet.userName()
@@ -88,4 +47,42 @@ async function register(page) {
     .fill(faker.random.locale())
   await page.getByRole("button", { name: "Save Account Information" }).click()
   return { username, password }
+}
+
+async function login(page, username, password) {
+  await getLinkByText(page, "Sign In").click()
+  await page.locator('input[name="username"]').fill(username)
+  await page.locator('input[name="password"]').fill(password)
+  await page.getByRole("button", { name: "Login" }).click()
+}
+async function checkout(page) {
+  await getLinkByText(page, "Proceed to Checkout").click()
+  await page.getByRole("button", { name: "Continue" }).click()
+  await getLinkByText(page, "Confirm").click()
+  const locator = page.locator("#Content > ul > li")
+  await expect(locator).toHaveText("Thank you, your order has been submitted.")
+}
+
+const addMaleBulldog = async (page) => {
+  await page.getByRole("link", { name: "K9-BD-01" }).click()
+}
+
+async function addMaleBulldogToCart(page) {
+  await page
+    .getByRole("row", {
+      name: "EST-6 K9-BD-01 Male Adult Bulldog $18.50 Add to Cart",
+    })
+    .getByRole("link", { name: "Add to Cart" })
+    .click()
+}
+
+async function clickDogLink(page) {
+  await page.locator("#QuickLinks").getByRole("link").nth(1).click()
+}
+
+async function navigateToStore(page) {
+  // baseURL is set in the config
+  await page.goto("/")
+  await expect(page).toHaveTitle("JPetStore Demo")
+  await getLinkByText(page, "Enter the Store").click()
 }
