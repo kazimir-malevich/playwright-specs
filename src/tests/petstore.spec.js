@@ -55,6 +55,7 @@ async function login(page, username, password) {
   await page.locator('input[name="password"]').fill(password)
   await page.getByRole("button", { name: "Login" }).click()
 }
+
 async function checkout(page) {
   await getLinkByText(page, "Proceed to Checkout").click()
   await page.getByRole("button", { name: "Continue" }).click()
