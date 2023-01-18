@@ -7,18 +7,12 @@ const getButtonByText = getByRole("button")
 const getDogLink = (page) =>
   page.locator("#QuickLinks").getByRole("link").nth(1)
 
-test("Buy a dog", async ({ page }) => {
-  await navigateToStore(page)
-  await getLinkByText(page, "Sign In").click()
-  await getLinkByText(page, "Register Now").click()
-  const { username, password } = await register(page)
-  await login(page, username, password)
-  await getDogLink(page).click()
-  await addMaleBulldog(page)
-  await addMaleBulldogToCart(page)
-  await checkout(page)
-  await getLinkByText(page, "Return to Main Menu").click()
-})
+async function navigateToStore(page) {
+  // baseURL is set in the config
+  await page.goto("/")
+  await expect(page).toHaveTitle("JPetStore Demo")
+  await getLinkByText(page, "Enter the Store").click()
+}
 
 async function register(page) {
   const username = faker.internet.userName()
@@ -60,14 +54,6 @@ async function login(page, username, password) {
   getButtonByText(page, "Login").click()
 }
 
-async function checkout(page) {
-  await getLinkByText(page, "Proceed to Checkout").click()
-  await page.getByRole("button", { name: "Continue" }).click()
-  await getLinkByText(page, "Confirm").click()
-  const locator = page.locator("#Content > ul > li")
-  await expect(locator).toHaveText("Thank you, your order has been submitted.")
-}
-
 const addMaleBulldog = async (page) => {
   await page.getByRole("link", { name: "K9-BD-01" }).click()
 }
@@ -81,9 +67,23 @@ async function addMaleBulldogToCart(page) {
     .click()
 }
 
-async function navigateToStore(page) {
-  // baseURL is set in the config
-  await page.goto("/")
-  await expect(page).toHaveTitle("JPetStore Demo")
-  await getLinkByText(page, "Enter the Store").click()
+async function checkout(page) {
+  await getLinkByText(page, "Proceed to Checkout").click()
+  await page.getByRole("button", { name: "Continue" }).click()
+  await getLinkByText(page, "Confirm").click()
+  const locator = page.locator("#Content > ul > li")
+  await expect(locator).toHaveText("Thank you, your order has been submitted.")
 }
+
+test("Buy a dog", async ({ page }) => {
+  await navigateToStore(page)
+  await getLinkByText(page, "Sign In").click()
+  await getLinkByText(page, "Register Now").click()
+  const { username, password } = await register(page)
+  await login(page, username, password)
+  await getDogLink(page).click()
+  await addMaleBulldog(page)
+  await addMaleBulldogToCart(page)
+  await checkout(page)
+  await getLinkByText(page, "Return to Main Menu").click()
+})
