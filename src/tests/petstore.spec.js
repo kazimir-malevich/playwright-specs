@@ -1,20 +1,24 @@
 import { faker } from "@faker-js/faker"
 const { test, expect } = require("@playwright/test")
 
+const getByRole = (role) => (page, name) => page.getByRole(role, { name })
+const getLinkByText = getByRole("link")
+const getButtonByText = getByRole("button")
+const getDogLink = (page) =>
+  page.locator("#QuickLinks").getByRole("link").nth(1)
+
 test("Buy a dog", async ({ page }) => {
   await navigateToStore(page)
   await getLinkByText(page, "Sign In").click()
   await getLinkByText(page, "Register Now").click()
   const { username, password } = await register(page)
   await login(page, username, password)
-  await clickDogLink(page)
+  await getDogLink(page).click()
   await addMaleBulldog(page)
   await addMaleBulldogToCart(page)
   await checkout(page)
   await getLinkByText(page, "Return to Main Menu").click()
 })
-
-const getLinkByText = (page, name) => page.getByRole("link", { name: name })
 
 async function register(page) {
   const username = faker.internet.userName()
@@ -53,7 +57,7 @@ async function login(page, username, password) {
   await getLinkByText(page, "Sign In").click()
   await page.locator('input[name="username"]').fill(username)
   await page.locator('input[name="password"]').fill(password)
-  await page.getByRole("button", { name: "Login" }).click()
+  getButtonByText(page, "Login").click()
 }
 
 async function checkout(page) {
@@ -75,10 +79,6 @@ async function addMaleBulldogToCart(page) {
     })
     .getByRole("link", { name: "Add to Cart" })
     .click()
-}
-
-async function clickDogLink(page) {
-  await page.locator("#QuickLinks").getByRole("link").nth(1).click()
 }
 
 async function navigateToStore(page) {
